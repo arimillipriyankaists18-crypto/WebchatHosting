@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test LiveChat | Consumer Care</title>
+  <title>Live Chat | Consumer Care</title>
 
   <!-- Floating Chat Button Styles -->
   <style>
@@ -21,7 +21,7 @@
       font-size: 30px;
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      z-index: 10000; /* Make sure button is on top */
+      z-index: 10000;
       pointer-events: auto;
     }
     #liveChatButton:hover {
@@ -30,48 +30,48 @@
   </style>
 </head>
 <body>
-  <h1>Testing LiveChat</h1>
-  <h2>Click the chat button at the bottom-right to start a conversation</h2>
+  <h1>Welcome to Consumer Care</h1>
+  <p>Click the chat button at the bottom-right to start a conversation with our agent.</p>
 
   <!-- Floating Chat Button -->
   <button id="liveChatButton">💬</button>
 
-  <!-- Embedded Messaging Script -->
+  <!-- Salesforce Embedded Messaging Script -->
   <script type="text/javascript">
-    // Initialize Embedded Messaging
     function initEmbeddedMessaging() {
       try {
         embeddedservice_bootstrap.settings.language = 'en_US';
         embeddedservice_bootstrap.init(
-          '00DgL00000MQZoi',  // Salesforce Org ID
-          'Web_Messaging_Deployment',  // Deployment Name
+          '00DgL00000MQZoi', // Salesforce Org ID
+          'Web_Messaging_Deployment', // Deployment Name
           'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com/embeddedservice/v1/embedded-service-config', // Config URL
-          { scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com' }
+          {
+            scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com',
+            onReady: function() {
+              console.log('Embedded Messaging ready ✅ Pre-chat form will appear when chat starts.');
+            }
+          }
         );
-        console.log('Embedded Messaging initialized ✅');
       } catch (err) {
         console.error('Error loading Embedded Messaging:', err);
       }
     }
 
-    // Load Salesforce bootstrap script
+    // Load Salesforce bootstrap script dynamically
     var script = document.createElement('script');
     script.src = 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com/embeddedservice/bootstrap.min.js';
     script.onload = initEmbeddedMessaging;
     document.body.appendChild(script);
 
-    // Chat Button Click Handler with retry
+    // Chat button click handler
     const chatButton = document.getElementById('liveChatButton');
-
     function tryStartChat() {
       if (window.embeddedservice_bootstrap && embeddedservice_bootstrap.startChat) {
-        embeddedservice_bootstrap.startChat(); // Open chat window
+        embeddedservice_bootstrap.startChat(); // Opens pre-chat form
       } else {
-        // Retry after 500ms until ready
         setTimeout(tryStartChat, 500);
       }
     }
-
     chatButton.addEventListener('click', tryStartChat);
   </script>
 </body>
