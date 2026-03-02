@@ -11,29 +11,26 @@
 
     <h2>Please click on the below chat button to initiate the chat</h2>
 
-    <script>
-        function initEmbeddedMessaging() {
-            try {
-                embeddedservice_bootstrap.settings.language = 'en_US';
+   <script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
-                embeddedservice_bootstrap.init(
-                    '00DgL00000MQZoi',
-                    'Web_Messaging_Deployment',
-                    'https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824',
-                    {
-                        scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
-                    }
-                );
-            } catch (err) {
-                console.error('Error loading Embedded Messaging: ', err);
-            }
-        }
-    </script>
+			embeddedservice_bootstrap.init(
+				'00DgL00000MQZoi',
+				'Web_Messaging_Deployment',
+				'https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824',
+				{
+					scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
-    <script 
-        src="https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824/assets/js/bootstrap.min.js"
-        onload="initEmbeddedMessaging()">
-    </script>
 
 </body>
 </html>
