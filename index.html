@@ -5,35 +5,72 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test LiveChat | Consumer Care</title>
+
+    <!-- Floating Chat Button Styles -->
+    <style>
+        #liveChatButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0070d2; /* Salesforce blue */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        #liveChatButton:hover {
+            background-color: #005fb2;
+        }
+    </style>
 </head>
 <body>
     <h1>Testing LiveChat</h1>
-    <h2>Please click on the chat button to initiate the chat</h2>
+    <h2>Click the chat button at the bottom-right to start a conversation</h2>
+
+    <!-- Floating Chat Button -->
+    <button id="liveChatButton">💬</button>
 
     <!-- Embedded Messaging Script -->
     <script type="text/javascript">
-    function initEmbeddedMessaging() {
-        try {
-            // Set language
-            embeddedservice_bootstrap.settings.language = 'en_US';
+        function initEmbeddedMessaging() {
+            try {
+                // Set language
+                embeddedservice_bootstrap.settings.language = 'en_US';
 
-            // Initialize Embedded Messaging
-            embeddedservice_bootstrap.init(
-                '00DgL00000MQZoi',                     // Salesforce Org ID
-                'Web_Messaging_Deployment',            // Deployment Name
-                'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com/embeddedservice/v1/embedded-service-config', // Config URL
-                {
-                    scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com' // Required
-                }
-            );
-        } catch (err) {
-            console.error('Error loading Embedded Messaging: ', err);
+                // Initialize Embedded Messaging
+                embeddedservice_bootstrap.init(
+                    '00DgL00000MQZoi',  // Salesforce Org ID
+                    'Web_Messaging_Deployment',  // Deployment Name
+                    'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com/embeddedservice/v1/embedded-service-config', // Config URL
+                    {
+                        scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com' // Required
+                    }
+                );
+            } catch (err) {
+                console.error('Error loading Embedded Messaging: ', err);
+            }
         }
-    }
+
+        // Load Salesforce bootstrap JS
+        var script = document.createElement('script');
+        script.src = "https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com/embeddedservice/bootstrap.min.js";
+        script.onload = initEmbeddedMessaging;
+        document.body.appendChild(script);
+
+        // Chat Button Click Event
+        document.getElementById('liveChatButton').addEventListener('click', function() {
+            if (window.embeddedservice_bootstrap) {
+                // Open the chat window
+                embeddedservice_bootstrap.startChat();
+            } else {
+                console.error('Embedded Messaging not initialized yet.');
+            }
+        });
     </script>
-
-    <!-- Load the bootstrap script from Salesforce SCRT domain -->
-    <script type="text/javascript" src="https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com/embeddedservice/bootstrap.min.js" onload="initEmbeddedMessaging()"></script>
-
 </body>
 </html>
