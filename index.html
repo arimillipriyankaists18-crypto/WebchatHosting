@@ -185,7 +185,7 @@
 <script type='text/javascript'>
 	function initEmbeddedMessaging() {
 		try {
-			embeddedservice_bootstrap.settings.language = 'en_US';
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
 			embeddedservice_bootstrap.init(
 				'00DgL00000MQZoi',
@@ -195,50 +195,14 @@
 					scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
 				}
 			);
-
 		} catch (err) {
 			console.error('Error loading Embedded Messaging: ', err);
 		}
 	};
 </script>
+<script type='text/javascript' src='https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebServiceDeployment1772532781604/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
-<script type='text/javascript'
-	src='https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebServiceDeployment1772532781604/assets/js/bootstrap.min.js'
-	onload='initEmbeddedMessaging()'>
-</script>
 
-<!-- ✅ AUTO DETECT COUNTRY AND SEND TO MESSAGING SESSION -->
-<script>
-window.addEventListener("onEmbeddedMessagingReady", () => {
-
-    console.log("Messaging is ready. Detecting country...");
-
-    fetch("https://ipapi.co/json/")
-        .then(response => response.json())
-        .then(data => {
-
-            const detectedCountry = data.country_name;
-
-            console.log("Detected Country:", detectedCountry);
-
-            // Send country as hidden pre-chat field
-            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
-                Country__c: detectedCountry
-            });
-
-        })
-        .catch(error => {
-            console.error("Country detection failed:", error);
-
-            // Optional fallback value
-            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
-                Country__c: "Unknown"
-            });
-        });
-
-});
-</script>
-	
 </body>
 </html>
  
