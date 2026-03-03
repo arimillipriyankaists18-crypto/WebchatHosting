@@ -1,40 +1,58 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded Messaging Example</title>
+  <meta charset="UTF-8">
+  <title>Test Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      font-size: 32px;
+    }
+    p {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Salesforce Embedded Messaging Demo</h1>
-    <p>The chat widget should appear in the corner once loaded.</p>
 
-    <!-- Salesforce Embedded Messaging Script -->
-    <script type="text/javascript">
-        function initEmbeddedMessaging() {
-            try {
-                // Set language (en_US, en, etc.)
-                embeddedservice_bootstrap.settings.language = 'en_US';
+  <h1>Test Chat</h1>
+  <p>For any queries click on the below chat button.</p>
 
-                // Initialize the embedded messaging
-                embeddedservice_bootstrap.init(
-                    '00DgL00000MQZoi', // Your org ID
-                    'Web_Messaging_Deployment', // Deployment name
-                    'https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824', // URL to deployment
-                    {
-                        scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
-                    }
-                );
-            } catch (err) {
-                console.error('Error loading Embedded Messaging: ', err);
-            }
-        };
-    </script>
+  <!-- ============================== -->
+  <!-- SALESFORCE EMBEDDED MESSAGING  -->
+  <!-- ============================== -->
 
-    <!-- Load the Salesforce bootstrap JS -->
-    <script type="text/javascript" 
-            src="https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824/assets/js/bootstrap.min.js" 
-            onload="initEmbeddedMessaging()">
-    </script>
+  <script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+
+			embeddedservice_bootstrap.init(
+				'00DgL00000MQZoi',
+				'Web_Messaging_Deployment',
+				'https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824',
+				{
+					scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingDeployme1772185616824/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
+
 </body>
 </html>
