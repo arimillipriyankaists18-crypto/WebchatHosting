@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<title>Magnum | Consumer Care</title>
-<style>
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #111; color: #fff; }
-    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; text-align: center; }
-    h1 { color: #d4af37; }
-    .options { display: flex; gap: 20px; margin-top: 40px; flex-wrap: wrap; justify-content: center; }
-    .card { background: #1c1c1c; padding: 25px; border-radius: 8px; width: 380px; }
-    .card h2 { color: #d4af37; }
-    .btn { display: inline-block; margin-top: 15px; padding: 12px 20px; background: #d4af37; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; border:none; cursor:pointer; }
-    form { margin-top: 15px; text-align: left; }
-    label { display: block; margin-top: 10px; font-size: 14px; }
-    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 4px; border: none; box-sizing: border-box; }
-    footer { margin-top: 50px; font-size: 12px; color: #aaa; }
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <title>Magnum | Consumer Care</title>
+    <style>
+        body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #111; color: #fff; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; text-align: center; }
+        h1 { color: #d4af37; }
+        .options { display: flex; gap: 20px; margin-top: 40px; flex-wrap: wrap; justify-content: center; }
+        .card { background: #1c1c1c; padding: 25px; border-radius: 8px; width: 380px; }
+        .card h2 { color: #d4af37; }
+        .btn { display: inline-block; margin-top: 15px; padding: 12px 20px; background: #d4af37; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; border:none; cursor:pointer; }
+        form { margin-top: 15px; text-align: left; }
+        label { display: block; margin-top: 10px; font-size: 14px; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 4px; border: none; box-sizing: border-box; }
+        footer { margin-top: 50px; font-size: 12px; color: #aaa; }
+    </style>
 </head>
 <body>
 
@@ -29,7 +29,7 @@
         <div class="card">
             <h2>Chat with Us</h2>
             <p>Get instant support from our virtual assistant or connect with a Magnum Care expert.</p>
-            </div>
+        </div>
 
         <div class="card">
             <h2>Contact Us</h2>
@@ -38,8 +38,8 @@
                 <input type="text" id="name" name="name" required>
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" required>
-                <label for="country_display">Country</label>
-                <input type="text" id="country_display" name="country" value="UK" readonly style="background: #333; color: #888;">
+                <label for="country_display">Country (Auto-Detected)</label>
+                <input type="text" id="country_display" name="country" value="Detecting..." readonly style="background: #333; color: #888;">
                 <label for="message">Your Message</label>
                 <textarea id="message" name="message" rows="4" required></textarea>
                 <button type="submit" class="btn">Submit</button>
@@ -51,37 +51,58 @@
 </div>
 
 <script type='text/javascript'>
-    // 1. ADD THE EVENT LISTENER TO PASS HIDDEN DATA
-    window.addEventListener("onEmbeddedMessagingPreChatFieldsUpdate", (event) => {
-        console.log("Pre-chat event triggered. Injecting hidden Country...");
-        const fields = event.detail.preChatFields;
+    // 1. LISTEN FOR MESSAGING READY TO PASS HIDDEN DATA
+    window.addEventListener("onEmbeddedMessagingReady", () => {
+        console.log("Salesforce Messaging is ready. Fetching location...");
+        
+        // Fetch the Country Name based on IP
+        fetch('https://ipapi.co/country_name/')
+            .then(response => response.text())
+            .then(country => {
+                console.log("Detected Country: " + country);
+                
+                // Update the visible "Country" field in your static form just for show
+                const displayField = document.getElementById('country_display');
+                if(displayField) displayField.value = country;
 
-        // Find the 'Country' field in your pre-chat form and set its value
-        for (let i = 0; i < fields.length; i++) {
-            if (fields[i].name === "Country") { 
-                fields[i].value = "UK"; // Change this dynamically if needed
-            }
-        }
+                // PASS THE DATA TO SALESFORCE
+                // Ensure "Country" is mapped in Salesforce Messaging Settings -> Parameter Mappings
+                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                    "Country": country
+                });
+            })
+            .catch(error => {
+                console.error("Location detection failed:", error);
+                // Fallback to UK if API fails
+                embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+                    "Country": "United Kingdom"
+                });
+            });
     });
 
-	function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'en_US';
+    // 2. INITIALIZE SALESFORCE MESSAGING
+    function initEmbeddedMessaging() {
+        try {
+            embeddedservice_bootstrap.settings.language = 'en_US'; 
 
-			embeddedservice_bootstrap.init(
-				'00DgL00000MQZoi',
-				'Web_Messaging_Channel_2',
-				'https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingChannel1772532637313',
-				{
-					scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
+            embeddedservice_bootstrap.init(
+                '00DgL00000MQZoi',
+                'Web_Messaging_Channel_2',
+                'https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingChannel1772532637313',
+                {
+                    scrt2URL: 'https://orgfarm-3599842067-dev-ed.develop.my.salesforce-scrt.com'
+                }
+            );
+        } catch (err) {
+            console.error('Error loading Embedded Messaging: ', err);
+        }
+    };
 </script>
-<script type='text/javascript' src='https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingChannel1772532637313/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
+<script type='text/javascript' 
+        src='https://orgfarm-3599842067-dev-ed.develop.my.site.com/ESWWebMessagingChannel1772532637313/assets/js/bootstrap.min.js' 
+        onload='initEmbeddedMessaging()'>
+</script>
 
 </body>
 </html>
